@@ -12,7 +12,7 @@ from schemas import *
 
 router = APIRouter(
     prefix="/api/admin",
-    tags=["admin"]
+    tags=["admin - users"]
 )
 
 DB = Annotated[AsyncSession, Depends(get_db)]
