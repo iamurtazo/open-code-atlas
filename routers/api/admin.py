@@ -1,6 +1,3 @@
-"""
-Admin API routes for User CRUD operations.
-"""
 from typing import Annotated, Sequence
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func, select
@@ -18,11 +15,12 @@ router = APIRouter(
     tags=["admin"]
 )
 
+DB = Annotated[AsyncSession, Depends(get_db)]
 
 @router.post("/users", response_model=UserAdmin, status_code=status.HTTP_201_CREATED)
 async def create_user(
     user: UserBase,
-    db: Annotated[AsyncSession, Depends(get_db)]
+    db: DB
 ):
     """Create a new user."""
     stmt = await db.execute(
