@@ -43,5 +43,7 @@ htmlcov/
 
 # Database
 *.
+*.db
 
 .github/
+.vscode/
