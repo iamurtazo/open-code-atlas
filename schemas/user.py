@@ -1,6 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, EmailStr
 
+
 # Base schema with common fields
 class UserBase(BaseModel):
     username: str = Field(min_length=3, max_length=100)
