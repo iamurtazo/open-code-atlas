@@ -24,12 +24,12 @@ class UserPublic(BaseModel):
     created_at: datetime
 
 
-class UserUpdate(UserBase):
+class UserUpdate(BaseModel):
     """Fields allowed to be updated by the user"""
-    username: str | None = Field(default=None, min_length=1, max_length=50)
-    email: EmailStr | None = Field(default=None, min_length=1, max_length=120)
-    first_name: str | None = Field(default=None, min_length=1, max_length=120)
-    last_name: str | None = Field(default=None, min_length=1, max_length=120)
+    username: str | None = Field(default=None, min_length=3, max_length=100)
+    email: EmailStr | None = Field(default=None, min_length=0, max_length=120)
+    first_name: str | None = Field(default=None, min_length=0, max_length=120)
+    last_name: str | None = Field(default=None, min_length=0, max_length=120)
 
 
 class UserProfile(BaseModel):
