@@ -1,10 +1,10 @@
 from __future__ import annotations
 from datetime import UTC, datetime
 from sqlalchemy import Integer, String, DateTime, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
 class User(Base):
@@ -23,6 +23,7 @@ class User(Base):
         onupdate=lambda: datetime.now(UTC),
         nullable=False
     )
+    
     # Required fields
     username: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
@@ -38,8 +39,7 @@ class User(Base):
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}', email='{self.email}')>"
 
-
-    
+ 
 class Course(Base):
     __tablename__ = "courses"
     
@@ -56,19 +56,20 @@ class Course(Base):
         onupdate=lambda: datetime.now(UTC),
         nullable=False
     )
+    
     # Required fields
     title: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str] = mapped_column(String, nullable=True)
-
+    
     enrollments: Mapped[list[Enrollment]] = relationship(
         "Enrollment", 
         back_populates="course"
-    )
-    
+    ) 
     
     def __repr__(self):
         return f"<Course(id={self.id}, title='{self.title}')>"
     
+
 class Enrollment(Base):
     __tablename__ = "enrollments"
 
