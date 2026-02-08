@@ -2,8 +2,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from database import create_tables, engine
 from middleware import AuthMiddleware
-from routers.api import (
-    admin as admin_router,
+from routers.api.admin import (
+    user as admin_router,
+    course as admin_course_router,
 )
 from routers.web import (
     users as web_users_router,
@@ -17,7 +18,17 @@ async def lifespan(app: FastAPI):
     await create_tables()
     yield
     await engine.dispose()
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    # openapi_tags=[
+    #     {
+    #         "description": "User management operations for administrators"
+    #     },
+    #     {
+    #         "description": "Course management operations for administrators"
+    #     }
+    # ]
+)
 
 app.add_middleware(AuthMiddleware)
 
@@ -26,6 +37,7 @@ templates = Jinja2Templates(directory="templates")
 
 
 app.include_router(admin_router.router)
+app.include_router(admin_course_router.router)
 app.include_router(web_users_router.router)
 
 
