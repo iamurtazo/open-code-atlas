@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.security import hash_password, verify_password
 from database import get_db
 from models import User
 
@@ -43,6 +44,7 @@ async def signup_user(
     db: DB,
     username: str = Form(...),
     email: str = Form(...),
+    password: str = Form(...),
     first_name: str | None = Form(None),
     last_name: str | None = Form(None),
 ):
@@ -72,6 +74,7 @@ async def signup_user(
     new_user = User(
         username=username,
         email=email.lower(),
+        hashed_password=hash_password(password),
         first_name=first_name or None,
         last_name=last_name or None,
     )
@@ -96,18 +99,19 @@ async def signup_user(
 async def login_user(
     db: DB,
     username: str = Form(...),
+    password: str = Form(...),
 ):
-    """Handle login form submission (username only for now)."""
+    """Handle login form submission."""
     result = await db.execute(
         select(User)
         .where(func.lower(User.username) == username.lower())
     )
     user = result.scalars().first()
 
-    if not user:
+    if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"No account found with username '{username}'"
+            detail="Invalid username or password"
         )
 
     response = JSONResponse(

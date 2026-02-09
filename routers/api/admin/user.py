@@ -4,6 +4,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from core.security import hash_password
 from database import get_db
 from models import User
 
@@ -40,7 +41,7 @@ async def list_users(
 # ── POST /api/admin/users ──
 @router.post("/users", response_model=UserAdmin, status_code=status.HTTP_201_CREATED)
 async def create_user(
-    user: UserBase,
+    user: UserCreate,
     db: DB
 ):
     """Create a new user."""
@@ -68,7 +69,8 @@ async def create_user(
         username=user.username,
         email=user.email.lower(),
         first_name=user.first_name,
-        last_name=user.last_name
+        last_name=user.last_name,
+        hashed_password=hash_password(user.password),
     )
     
     db.add(new_user)
