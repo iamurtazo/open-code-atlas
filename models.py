@@ -27,6 +27,7 @@ class User(Base):
     # Required fields
     username: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    hashed_password: Mapped[str] = mapped_column(String, nullable=False)
     # Optional fields
     first_name: Mapped[str] = mapped_column(String(70), nullable=True)
     last_name: Mapped[str] = mapped_column(String(100), nullable=True)
