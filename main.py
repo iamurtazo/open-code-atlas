@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from database import create_tables, engine
 from middleware import AuthMiddleware
+from admin import create_admin
 from routers.api.admin import (
     user as admin_router,
     course as admin_course_router,
@@ -31,6 +32,9 @@ app = FastAPI(
 )
 
 app.add_middleware(AuthMiddleware)
+
+# Admin panel — must be mounted BEFORE /static to avoid route shadowing
+admin = create_admin(app, engine)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
