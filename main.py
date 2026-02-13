@@ -20,15 +20,7 @@ async def lifespan(app: FastAPI):
     yield
     await engine.dispose()
 app = FastAPI(
-    lifespan=lifespan,
-    # openapi_tags=[
-    #     {
-    #         "description": "User management operations for administrators"
-    #     },
-    #     {
-    #         "description": "Course management operations for administrators"
-    #     }
-    # ]
+    lifespan=lifespan
 )
 
 app.add_middleware(AuthMiddleware)
